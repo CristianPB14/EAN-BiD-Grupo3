@@ -1,0 +1,5 @@
+# requirements.txt · versiones ancladas, no las ultimas disponibles
+pandas==2.2.2
+numpy==1.26.4
+jupyterlab==4.2.0
+psutil==5.9.8
