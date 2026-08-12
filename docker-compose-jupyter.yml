@@ -1,0 +1,23 @@
+services:
+  jupyter:
+    image: jupyter/scipy-notebook:python-3.11
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work/notebooks
+      - ./data:/home/jovyan/work/data
+      - ./requirements.txt:/tmp/requirements.txt
+    command: >
+      bash -c "pip install -r /tmp/requirements.txt &&
+               start-notebook.sh --NotebookApp.token=''"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15.3  # Versión de PostgreSQL anclada
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"

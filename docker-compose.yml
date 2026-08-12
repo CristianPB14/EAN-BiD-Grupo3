@@ -1,13 +1,77 @@
-# docker-compose.yml · un servicio de Jupyter con imagen oficial
 services:
-  jupyter:
-    image: jupyter/scipy-notebook:python-3.11
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    environment:
+      - CLUSTER_NAME=acueducto
+    env_file:
+      - ./hadoop.env
     ports:
-      - "8888:8888"          # mapea el puerto del contenedor al del host
+      - "9870:9870"
     volumes:
-      - ./notebooks:/home/jovyan/work/notebooks
-      - ./data:/home/jovyan/work/data
-      - ./requirements.txt:/tmp/requirements.txt
-    command: >
-      bash -c "pip install -r /tmp/requirements.txt &&
-               start-notebook.sh --NotebookApp.token=''"
+      - namenode:/hadoop/dfs/name
+      - ./muestra:/muestra:ro
+
+  datanode1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode1
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - datanode1:/hadoop/dfs/data
+
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - datanode2:/hadoop/dfs/data
+
+  datanode3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode3
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - datanode3:/hadoop/dfs/data
+
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870 datanode1:9864
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8088:8088"
+
+  nodemanager:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    environment:
+      - SERVICE_PRECONDITION=resourcemanager:8088
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    environment:
+      - SERVICE_PRECONDITION=resourcemanager:8088
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8188:8188"
+
+volumes:
+  namenode:
+  datanode1:
+  datanode2:
+  datanode3:

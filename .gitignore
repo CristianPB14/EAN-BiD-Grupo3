@@ -1,13 +1,23 @@
-# Datos: nunca se versionan
-data/raw/*
-!data/raw/.gitkeep
-
-# Credenciales y variables de entorno
+# --- Entornos y credenciales (Seguridad crítica) ---
 .env
-*.key
-secrets/
+*.env
+venv/
+env/
 
-# Temporales de Python y Jupyter
+# --- Datos pesados y muestras locales (Evita bloqueos en GitHub) ---
+muestra/*.csv
+data/
+*.parquet
+*.json
+
+# --- Basura del sistema operativo y editores ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Caché de Python ---
 __pycache__/
+*.py[cod]
+*$py.class
 .ipynb_checkpoints/
-*.pyc
