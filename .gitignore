@@ -1,14 +1,22 @@
-# --- Entornos y credenciales (Seguridad crítica) ---
+# --- Credenciales y variables de entorno reales (nunca se versionan) ---
 .env
-*.env
+.env.*
+!.env.example
+
+# --- Configuración de servicios SIN secretos (sí se versiona) ---
+# hadoop.env solo declara nombre de clúster, rutas de HDFS/YARN y replicación:
+# no tiene contraseñas. Debe quedar excluido del bloqueo de *.env de arriba.
+!hadoop.env
+
+# --- Entornos virtuales de Python ---
 venv/
 env/
 
-# --- Datos pesados y muestras locales (Evita bloqueos en GitHub) ---
+# --- Datos pesados y muestras locales (nunca se versionan, la estructura sí) ---
+data/raw/*
+!data/raw/.gitkeep
 muestra/*.csv
-data/
 *.parquet
-*.json
 
 # --- Basura del sistema operativo y editores ---
 .DS_Store
@@ -21,7 +29,3 @@ __pycache__/
 *.py[cod]
 *$py.class
 .ipynb_checkpoints/
-
-data/
-muestra/*.csv
-resultados/
