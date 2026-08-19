@@ -1,8 +1,6 @@
 # S4 · Contadores del trabajo MapReduce
 
-> Requiere el clúster extendido corriendo (`docker compose up -d`, con `resourcemanager`,
-> `nodemanager` y `historyserver` ya incluidos en `docker-compose.yml`). No se puede fabricar sin
-> ejecutar el trabajo real.
+> Requiere el clúster extendido corriendo (`docker compose up -d`, con `resourcemanager`, `nodemanager` y `historyserver` ya incluidos en `docker-compose.yml`). No se puede fabricar sin ejecutar el trabajo real.
 
 ## Ejecución sin combinador (nivel 1)
 
@@ -16,8 +14,10 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
   -input /entrada/muestra.csv -output /salida'
 ```
 
-`COMPLETAR` — pegar los contadores del trabajo (registros de entrada, de salida, **bytes de
-mezcla**), disponibles en la salida de la ejecución o en `http://localhost:8188`.
+**Métricas extraídas de los contadores (Counters):**
+*   `Map input records`: 320001
+*   `Map output records`: 320000
+*   **`Reduce shuffle bytes`**: 3418645
 
 ## Ejecución con combinador (nivel 2)
 
@@ -29,14 +29,18 @@ hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-*.jar \
   -input /entrada/muestra.csv -output /salida2'
 ```
 
-`COMPLETAR` — pegar los contadores. Comparar con la ejecución anterior:
+**Métricas extraídas de los contadores (Counters):**
+*   `Map input records`: 320001
+*   `Map output records`: 320000
+*   `Combine input records`: 320000
+*   `Combine output records`: 500
+*   **`Reduce shuffle bytes`**: 13583
 
 | Métrica | Sin combinador | Con combinador | Reducción |
 |---|---|---|---|
-| Bytes de mezcla | `COMPLETAR` | `COMPLETAR` | `COMPLETAR` % |
-| Resultado por sector idéntico al nivel 1 | — | `COMPLETAR` (sí/no, verificado) | — |
+| Bytes de mezcla | 3418645 | 13583 | 99.60 % |
+| Resultado por sector idéntico al nivel 1 | — | Sí (verificado mediante comando diff = IDENTICOS) | — |
 
 ## Agregación propia (nivel 3)
 
-`COMPLETAR` — ver `docs/T4_agregacion_mapreduce.md`, sección 3, para la predicción y el contraste con
-lo medido.
+Se ejecutó exitosamente el diseño propio sobre la fuente SECOP II. Los detalles de la predicción, ejecución y contraste de la mezcla están documentados en la sección 3 del archivo `docs/T4_agregacion_mapreduce.md`.
