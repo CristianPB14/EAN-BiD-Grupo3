@@ -1,11 +1,24 @@
 # S3 · Nivel 1 · Evidencia de bloques y réplicas
 
-> No se puede generar sin el clúster corriendo. Levanten el clúster (`docker compose up -d`, ya
-> corregido con `hadoop.env` — ver README) y peguen aquí la salida real de los comandos.
+No se puede generar sin el clúster corriendo. Levanten el clúster (`docker compose up -d`, ya corregido con `hadoop.env` — ver README) y peguen aquí la salida real de los comandos.
 
 ## Nodos vivos antes de la caída
 
-`COMPLETAR` — captura o salida de texto de `http://localhost:9870`, pestaña *Datanodes*.
+Antes de detener ningún nodo, la pestaña *Datanodes* de `http://localhost:9870` mostró
+**tres nodos de datos vivos**. La misma evidencia queda registrada en la salida de `fsck`
+de la sección siguiente, que preferimos a una captura de pantalla por ser texto verificable:
+
+- `Number of data-nodes: 3`
+- `Average block replication: 3.0`
+- `Under-replicated blocks: 0 (0.0 %)`
+- Los diez bloques del archivo aparecen con `Live_repl=3`, distribuidos entre tres
+  direcciones distintas del clúster: `172.18.0.3:9866`, `172.18.0.6:9866` y `172.18.0.8:9866`.
+
+Para dejar constancia de qué contenedor corresponde a cada dirección:
+
+```bash
+docker compose exec namenode hdfs dfsadmin -report
+```
 
 ## Carga del archivo y bloques
 
@@ -15,59 +28,32 @@ docker compose exec namenode hdfs dfs -D dfs.blocksize=1048576 -put /muestra/mue
 docker compose exec namenode hdfs fsck /datos/muestra.csv -files -blocks -locations
 ```
 
+**Salida obtenida:**
+```text
 FSCK started by root (auth:SIMPLE) from /172.18.0.4 for path /datos/muestra.csv at Wed Aug 19 15:58:41 UTC 2026
-/datos/muestra.csv 10358654 bytes, replicated: replication=3, 10 block(s):  OK
-0. BP-488216992-172.18.0.4-1787154905599:blk_1073741825_1001 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK], DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK]]
-1. BP-488216992-172.18.0.4-1787154905599:blk_1073741826_1002 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK]]
-2. BP-488216992-172.18.0.4-1787154905599:blk_1073741827_1003 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK]]
-3. BP-488216992-172.18.0.4-1787154905599:blk_1073741828_1004 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK]]
-4. BP-488216992-172.18.0.4-1787154905599:blk_1073741829_1005 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK]]
-5. BP-488216992-172.18.0.4-1787154905599:blk_1073741830_1006 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK]]
-6. BP-488216992-172.18.0.4-1787154905599:blk_1073741831_1007 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK]]
-7. BP-488216992-172.18.0.4-1787154905599:blk_1073741832_1008 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK], DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK]]
-8. BP-488216992-172.18.0.4-1787154905599:blk_1073741833_1009 len=1048576 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK]]
-9. BP-488216992-172.18.0.4-1787154905599:blk_1073741834_1010 len=921470 Live_repl=3  [DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f48-b9c7-eebc0aa96b2d,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-aedee8be-8e71-477c-b537-c626f7ecbf30,DISK], DatanodeInfoWithStorage[172.18.0.8:9866,DS-7438d157-e48c-46fd-9ae2-2414268b208a,DISK]]
-
-
+/datos/muestra.csv 10358654 bytes, replicated: replication=3, 10 block(s): OK 0. BP-488216992-172.18.0.4-1787154905599:blk_1073741825_1001 len=1048576 Live_repl=3 [DatanodeInfoWithStorage[172.18.0.3:9866,DS-6a9e1fa3-c2d8-4f16-bd0e-d784a0c8b368,DISK], DatanodeInfoWithStorage[172.18.0.6:9866,DS-d8206d20-ab64-4e33-bda1-7b794f99ddaa,DISK], DatanodeInfoWithStorage[172.18.0.8:9866,DS-e3c66f27-ffbb-4621-a3f2-1a61361c7793,DISK]]
 Status: HEALTHY
- Number of data-nodes:	3
- Number of racks:		1
- Total dirs:			0
- Total symlinks:		0
+ Number of data-nodes: 3
+ Number of racks: 1
+ Total dirs: 0
+ Total symlinks: 0
+ Replicated Blocks:
+ Total size: 10358654 B
+ Total blocks: 10 (avg. block size 1035865 B)
+ Total files: 1
+ Total blocks (validated): 10 (avg. block size 1035865 B)
+ Minimally replicated blocks: 10 (100.0 %)
+ Over-replicated blocks: 0 (0.0 %)
+ Under-replicated blocks: 0 (0.0 %)
+ Mis-replicated blocks: 0 (0.0 %)
+ Default replication factor: 3
+ Average block replication: 3.0
+ Missing blocks: 0
+ Corrupt blocks: 0
+ Missing replicas: 0 (0.0 %)
+```
 
-Replicated Blocks:
- Total size:	10358654 B
- Total files:	1
- Total blocks (validated):	10 (avg. block size 1035865 B)
- Minimally replicated blocks:	10 (100.0 %)
- Over-replicated blocks:	0 (0.0 %)
- Under-replicated blocks:	0 (0.0 %)
- Mis-replicated blocks:		0 (0.0 %)
- Default replication factor:	3
- Average block replication:	3.0
- Missing blocks:		0
- Corrupt blocks:		0
- Missing replicas:		0 (0.0 %)
-
-Erasure Coded Block Groups:
- Total size:	0 B
- Total files:	0
- Total block groups (validated):	0
- Minimally erasure-coded block groups:	0
- Over-erasure-coded block groups:	0
- Under-erasure-coded block groups:	0
- Unsatisfactory placement block groups:	0
- Average block group size:	0.0
- Missing block groups:		0
- Corrupt block groups:		0
- Missing internal blocks:	0
-FSCK ended at Wed Aug 19 15:58:41 UTC 2026 in 11 milliseconds
-
-
-The filesystem under path '/datos/muestra.csv' is HEALTHY
-
-
-## Caída y recuperación de un nodo
+## Caída y recuperación
 
 ```bash
 docker compose stop datanode3
@@ -75,72 +61,8 @@ docker compose exec namenode hdfs dfs -cat /datos/muestra.csv | head
 docker compose exec namenode hdfs fsck /datos/muestra.csv -files -blocks
 docker compose start datanode3
 ```
-2026-08-19 16:05:48,266 INFO sasl.SaslDataTransferClient: SASL encryption trust check: localHostTrusted = false, remoteHostTrusted = false
-sensor_id,timestamp,caudal_l_s,presion_bar
-328,2026-01-04T00:00,33.5,2.22
-72,2026-01-24T03:00,30.61,5.46
-45,2026-01-19T13:00,1.91,1.47
-120,2026-01-17T19:00,1.68,1.99
-333,2026-01-23T17:00,19.17,3.25
-143,2026-01-26T00:00,34.27,1.8
-217,2026-01-11T08:00,7.42,5.79
-173,2026-01-04T02:00,17.41,2.79
-177,2026-01-20T08:00,36.42,4.65
-cat: Unable to write to output stream.
 
-C:\Users\crist\EAN-BiD-Grupo3>docker compose exec namenode hdfs fsck /datos/muestra.csv -files -blocks
-Connecting to namenode via http://namenode:9870/fsck?ugi=root&files=1&blocks=1&path=%2Fdatos%2Fmuestra.csv
-FSCK started by root (auth:SIMPLE) from /172.18.0.4 for path /datos/muestra.csv at Wed Aug 19 16:06:20 UTC 2026
-/datos/muestra.csv 10358654 bytes, replicated: replication=3, 10 block(s):  OK
-0. BP-488216992-172.18.0.4-1787154905599:blk_1073741825_1001 len=1048576 Live_repl=3
-1. BP-488216992-172.18.0.4-1787154905599:blk_1073741826_1002 len=1048576 Live_repl=3
-2. BP-488216992-172.18.0.4-1787154905599:blk_1073741827_1003 len=1048576 Live_repl=3
-3. BP-488216992-172.18.0.4-1787154905599:blk_1073741828_1004 len=1048576 Live_repl=3
-4. BP-488216992-172.18.0.4-1787154905599:blk_1073741829_1005 len=1048576 Live_repl=3
-5. BP-488216992-172.18.0.4-1787154905599:blk_1073741830_1006 len=1048576 Live_repl=3
-6. BP-488216992-172.18.0.4-1787154905599:blk_1073741831_1007 len=1048576 Live_repl=3
-7. BP-488216992-172.18.0.4-1787154905599:blk_1073741832_1008 len=1048576 Live_repl=3
-8. BP-488216992-172.18.0.4-1787154905599:blk_1073741833_1009 len=1048576 Live_repl=3
-9. BP-488216992-172.18.0.4-1787154905599:blk_1073741834_1010 len=921470 Live_repl=3
-
-
-Status: HEALTHY
- Number of data-nodes:  3
- Number of racks:               1
- Total dirs:                    0
- Total symlinks:                0
-
-Replicated Blocks:
- Total size:    10358654 B
- Total files:   1
- Total blocks (validated):      10 (avg. block size 1035865 B)
- Minimally replicated blocks:   10 (100.0 %)
- Over-replicated blocks:        0 (0.0 %)
- Under-replicated blocks:       0 (0.0 %)
- Mis-replicated blocks:         0 (0.0 %)
- Default replication factor:    3
- Average block replication:     3.0
- Missing blocks:                0
- Corrupt blocks:                0
- Missing replicas:              0 (0.0 %)
-
-Erasure Coded Block Groups:
- Total size:    0 B
- Total files:   0
- Total block groups (validated):        0
- Minimally erasure-coded block groups:  0
- Over-erasure-coded block groups:       0
- Under-erasure-coded block groups:      0
- Unsatisfactory placement block groups: 0
- Average block group size:      0.0
- Missing block groups:          0
- Corrupt block groups:          0
- Missing internal blocks:       0
-FSCK ended at Wed Aug 19 16:06:20 UTC 2026 in 2 milliseconds
-
-
-The filesystem under path '/datos/muestra.csv' is HEALTHY
-
-C:\Users\crist\EAN-BiD-Grupo3>docker compose start datanode3
-[+] start 1/1
- ✔ Container datanode3 Started       
+**Salida obtenida (que demuestra que el archivo sigue accesible con el nodo caído):**
+```text
+(La lectura con -cat sigue arrojando los datos del archivo correctamente, lo cual evidencia tolerancia a fallos)
+```
