@@ -9,20 +9,47 @@ docker compose exec namenode hdfs dfs -du -h /datos
 docker compose exec namenode hdfs fsck /datos/muestra_r<R>.csv -files -blocks
 ```
 
-| Factor `R` | Almacenamiento físico medido (`hdfs dfs -du`) | ¿Coincide con volumen lógico × R? | Nodos que tolera |
-|---|---|---|---|
-| 1 | `COMPLETAR` | `COMPLETAR` | 0 |
-| 2 | `COMPLETAR` | `COMPLETAR` | 1 |
-| 3 | `COMPLETAR` | `COMPLETAR` | 2 |
+| Archivo | Factor (R) | Tamaño Lógico | Tamaño Físico (Ocupado) | ¿Coincide con Lógico × R? |
+| :--- | :---: | :--- | :--- | :--- |
+| `muestra_r1.csv` | 1 | 9.9 M | 9.9 M | Sí |
+| `muestra_r2.csv` | 2 | 9.9 M | 19.8 M | Sí |
+| `muestra_r3.csv` | 3 | 9.9 M | 29.6 M | Sí |
 
 > Referencia teórica del caso del acueducto (sesión 3, no reemplaza la medición propia): con 7,8 GB
 > lógicos, R=1 → 7,8 GB, R=2 → 15,6 GB, R=3 → 23,4 GB.
 
 ## Prueba de pérdida con factor 1
 
-`COMPLETAR` — al detener un nodo que tenga bloques del archivo con `R=1`, ¿qué reporta `fsck`? Debe
-mostrar bloques corruptos o faltantes: sin réplica no hay tolerancia. Contrasten contra el mismo
-experimento con `R=3`, donde el archivo debe seguir accesible.
+java.nio.channels.UnresolvedAddressException
+        at sun.nio.ch.Net.checkAddress(Net.java:101)
+        at sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:622)
+        at org.apache.hadoop.net.SocketIOWithTimeout.connect(SocketIOWithTimeout.java:192)
+        at org.apache.hadoop.net.NetUtils.connect(NetUtils.java:533)
+        at org.apache.hadoop.hdfs.DFSClient.newConnectedPeer(DFSClient.java:2940)
+        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.nextTcpPeer(BlockReaderFactory.java:822)
+        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.getRemoteBlockReaderFromTcp(BlockReaderFactory.java:747)
+        at org.apache.hadoop.hdfs.client.impl.BlockReaderFactory.build(BlockReaderFactory.java:380)
+        at org.apache.hadoop.hdfs.DFSInputStream.getBlockReader(DFSInputStream.java:644)
+        at org.apache.hadoop.hdfs.DFSInputStream.blockSeekTo(DFSInputStream.java:575)
+        at org.apache.hadoop.hdfs.DFSInputStream.readWithStrategy(DFSInputStream.java:757)
+        at org.apache.hadoop.hdfs.DFSInputStream.read(DFSInputStream.java:829)
+        at java.io.DataInputStream.read(DataInputStream.java:100)
+        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:94)
+        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:68)
+        at org.apache.hadoop.io.IOUtils.copyBytes(IOUtils.java:129)
+        at org.apache.hadoop.fs.shell.Display$Cat.printToStdout(Display.java:101)
+        at org.apache.hadoop.fs.shell.Display$Cat.processPath(Display.java:96)
+        at org.apache.hadoop.fs.shell.Command.processPathInternal(Command.java:367)
+        at org.apache.hadoop.fs.shell.Command.processPaths(Command.java:331)
+        at org.apache.hadoop.fs.shell.Command.processPathArgument(Command.java:304)
+        at org.apache.hadoop.fs.shell.Command.processArgument(Command.java:286)
+        at org.apache.hadoop.fs.shell.Command.processArguments(Command.java:270)
+        at org.apache.hadoop.fs.shell.FsCommand.processRawArguments(FsCommand.java:120)
+        at org.apache.hadoop.fs.shell.Command.run(Command.java:177)
+        at org.apache.hadoop.fs.FsShell.run(FsShell.java:327)
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:76)
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:90)
+        at org.apache.hadoop.fs.FsShell.main(FsShell.java:390)
 
 ## Relación factor–tolerancia, con números propios
 

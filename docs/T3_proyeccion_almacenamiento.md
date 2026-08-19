@@ -4,8 +4,7 @@
 
 ## 0. Consolidación del equipo
 
-Antes de proyectar: `COMPLETAR` — qué fuente única eligió el equipo, o qué combinación de las tres
-fichas individuales (T1) se unificó, y por qué.
+Se eligió **SECOP II** como fuente única del proyecto. La decisión se basa en su relevancia para el análisis de la contratación pública y la transparencia estatal. Técnicamente, cuenta con múltiples variables categóricas (departamento, tipo de contrato, estado) numéricas (cuantía del contrato) y fechas estructuradas que permitirán realizar agrupaciones, cálculos de agregación y un particionamiento temporal eficiente en la arquitectura de datos posterior.
 
 ## 1. Fórmulas de la sesión
 
@@ -15,47 +14,30 @@ fichas individuales (T1) se unificó, y por qué.
 
 ## 2. Proyección a doce meses
 
-Partiendo de `S0` y `g` de la ficha T1 del equipo, el volumen proyectado a 12 meses es
-`S0 · (1+g)^12`.
+Partiendo de la tasa de crecimiento mensual `g = 5%` (0.05) y un tamaño inicial `S0 = 0.3045 GB` medidos en la ficha T1 del equipo, el volumen proyectado a 12 meses es `S0 · (1+g)^12` = **0.5468 GB**.
 
 | Factor de réplica `R` | Almacenamiento físico proyectado | Nodos que puede perder |
 |---|---|---|
-| 1 | `COMPLETAR` | 0 · sin tolerancia |
-| 2 | `COMPLETAR` | 1 |
-| 3 | `COMPLETAR` | 2 |
-
-> Ejemplo de referencia (caso del acueducto de la teoría de sesión, **no son las cifras del
-> equipo**): con 7,8 GB lógicos mensuales, R=1 → 7,8 GB, R=2 → 15,6 GB, R=3 → 23,4 GB. Reemplacen
-> con el volumen proyectado real de su fuente.
+| 1 | **0.5468 GB** | 0 · sin tolerancia |
+| 2 | **1.0937 GB** | 1 |
+| 3 | **1.6405 GB** | 2 |
 
 ## 3. Tamaño de bloque
 
-Usen el valor real de HDFS, 128 MB, no el didáctico de 1 MB de la práctica en clase.
+Usando el valor real de HDFS (128 MB):
 
-- Número de bloques a 12 meses con bloque de 128 MB: `COMPLETAR`
-- Tensión a nombrar: `COMPLETAR` — bloques muy grandes desperdician espacio con archivos pequeños;
-  bloques muy pequeños multiplican los metadatos que el nodo maestro debe mantener en memoria.
+- **Número de bloques a 12 meses:** 5 bloques.
+- **Tensión estructural del sistema:** Existe un equilibrio crítico al definir este valor. Si configuramos bloques muy grandes frente a archivos pequeños, desperdiciamos espacio y anulamos la capacidad de procesamiento en paralelo. Por el contrario, si fragmentamos en bloques muy pequeños, multiplicamos drásticamente la cantidad de metadatos, lo que podría saturar la memoria RAM del nodo maestro (NameNode) y colapsar el control del clúster.
 
 ## 4. Decisión y justificación
 
-- **Factor de réplica elegido:** `COMPLETAR`
-- **Por qué:** `COMPLETAR` — ¿el dato es crítico e irrecuperable (telemetría histórica) o se puede
-  regenerar? Eso decide si el costo de triplicar el almacenamiento se justifica.
-- **Tamaño de bloque elegido:** `COMPLETAR`
-- **Por qué:** `COMPLETAR`
+- **Factor de réplica elegido:** 3
+- **Por qué:** Tratándose de expedientes de contratación estatal (SECOP II), la información posee un carácter probatorio y de auditoría crítico. Aunque los datos puedan volver a descargarse del portal oficial en caso de desastre, una pérdida local paralizaría cualquier proceso de análisis en curso. El costo físico de triplicar el almacenamiento (pasando de ~0.55 GB a apenas 1.64 GB proyectados) es marginal y económicamente viable frente a la garantía absoluta de tolerar la caída simultánea de hasta dos servidores.
+- **Tamaño de bloque elegido:** 128 MB
+- **Por qué:** El volumen lógico proyectado a un año (0.5468 GB) es relativamente bajo, generando únicamente 5 bloques bajo este estándar. Reducir el tamaño del bloque aumentaría el tráfico de metadatos hacia el NameNode sin ofrecer una mejora significativa en el paralelismo de las consultas, por lo que el valor por defecto es la decisión más estable.
 
 ## 5. Evidencia práctica
 
-Peguen aquí (o enlacen a `resultados/s3_evidencia_fsck.md`) la salida real de:
-
-```bash
-docker compose exec namenode hdfs dfs -du -h /datos
-docker compose exec namenode hdfs fsck /datos/muestra_r3.csv -files -blocks
-```
-
-`COMPLETAR`
-
----
-
-*Criterio de aceptación: otra persona, con los datos de la ficha T1, debe obtener las mismas cifras
-de esta proyección.*
+Las pruebas físicas de tolerancia a fallos, la comprobación del particionamiento de bloques (`fsck`) y la medición en disco de los distintos factores de réplica (`-du -h`) ejecutadas sobre nuestro clúster local se encuentran documentadas exhaustivamente en los siguientes archivos de resultados:
+* `resultados/s3_evidencia_fsck.md`
+* `resultados/s3_comparacion_factores.md`
