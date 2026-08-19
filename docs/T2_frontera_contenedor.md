@@ -1,26 +1,27 @@
-# S2 · Nivel 3 · Frontera del contenedor
+# T2 · Frontera del Contenedor y Clon Limpio
 
-Dónde vive cada elemento del proyecto, y por qué.
+**Sesión 2 · Reproducibilidad y Entornos Aislados**
 
-| Elemento | ¿Dentro de la imagen? ¿Volumen montado? ¿En el compose? ¿En `.env`? | Justificación |
-|---|---|---|
-| Código de los cuadernos | Volumen montado (`./notebooks:/home/jovyan/work/notebooks`) | Cambia constantemente durante el desarrollo; reconstruir la imagen por cada edición sería lento. Se versiona en Git, no en la imagen. |
-| Librerías de Python | Dentro de la imagen, instaladas desde `requirements.txt` al construir/levantar el contenedor | Son iguales para todo el equipo; deben quedar fijas y no depender de qué tenga cada persona en su máquina. |
-| Datos crudos | Volumen montado (`./data:/home/jovyan/work/data`), y **nunca entran a Git** (`data/raw/*` en `.gitignore`) | Son grandes, binarios, y cambian de tamaño constantemente; harían el repositorio inmanejable. Se documentan en la ficha técnica (T1), no se versionan aquí. |
-| Credenciales de la base de datos | Archivo `.env`, inyectadas al compose con `${POSTGRES_USER}` etc. | Nunca deben quedar en texto plano en un archivo versionado (ver la corrección en `notebooks/01_conexion_db.ipynb`). `.env` está en `.gitignore`; `.env.example` sí se versiona, sin valores. |
-| Configuración del clúster HDFS/YARN (`hadoop.env`) | Se versiona en la raíz del repositorio | No contiene secretos, solo nombres de servicio y rutas internas del clúster; todo el equipo necesita exactamente los mismos valores para que los nodos se descubran entre sí. |
+Este documento registra los hallazgos y correcciones realizados al someter nuestro repositorio a la prueba del "clon limpio" en un equipo físico diferente (laptop) al de desarrollo original (PC de escritorio). El objetivo es documentar qué elementos no viajan en el código y cómo aseguramos que cualquier integrante del grupo pueda levantar el proyecto sin errores.
 
-## Prueba en entorno limpio
+## 1. Prueba en entorno limpio: Registro de fallos
 
-`COMPLETAR`: documenten aquí el resultado de reproducir el proyecto en una máquina distinta (otro
-equipo del grupo, una máquina virtual, o GitHub Codespaces). Casi siempre algo falla la primera vez —
-ese hallazgo es el que hay que registrar, no ocultar.
+Al intentar levantar el proyecto clonado desde cero, identificamos las siguientes fricciones en la frontera del contenedor:
 
-- **Qué probaron:** `COMPLETAR`
-- **Qué falló la primera vez:** `COMPLETAR`
-- **Cómo lo resolvieron:** `COMPLETAR`
+*   **Fallo 1: Ausencia de variables de entorno y credenciales expuestas**
+    *   **El problema:** El contenedor de la base de datos no pudo levantarse porque el archivo `.env` no viajó con el código (está protegido por el `.gitignore`). Además, detectamos que el cuaderno `01_conexion_db.ipynb` tenía credenciales escritas en texto plano (como `usuario_acueducto`), vulnerando la seguridad.
+    *   **La solución:** Inicialmente se transfirió el archivo `.env` de forma manual entre los equipos. Para sistematizar la solución para el resto del equipo, creamos el archivo plantilla `.env.example`. Adicionalmente, refactorizamos la conexión en el notebook para que lea las contraseñas de forma invisible desde el sistema operativo usando `os.environ`[cite: 1].
 
----
+*   **Fallo 2: Ausencia de datos crudos (`FileNotFoundError`)**
+    *   **El problema:** Al ejecutar el cuaderno `s01_perfilamiento.ipynb`, el código arrojó un error indicando que no encontraba la ruta del archivo `secop_sample.csv`[cite: 1]. Esto ocurrió porque Git ignoró correctamente el archivo pesado original (de más de 300 MB), dejando la carpeta `data/raw/` vacía en el nuevo clon.
+    *   **La solución:** En lugar de transferir el archivo manualmente mediante memorias USB, creamos una carpeta compartida en Google Drive con los documentos masivos centralizados. Se estableció como regla para los integrantes del grupo que el primer paso tras clonar es descargar `secop_sample.csv` desde el Drive y ubicarlo manualmente en la carpeta `data/raw/`.
 
-*Sesión 2, nivel 3. Sin ruta única: lo que se evalúa es que cada decisión tenga una razón, no que
-coincida con una respuesta modelo.*
+*   **Fallo 3: Ausencia de la muestra procesada**
+    *   **El problema:** Los contenedores que dependen de los datos de la carpeta `muestra/` fallarían porque esta carpeta tampoco existe en un repositorio recién clonado desde GitHub.
+    *   **La solución:** Documentamos en la guía de incorporación la necesidad de ejecutar el script `python genera_muestra.py` en la consola local antes de iniciar los contenedores, garantizando que el entorno tenga los datos sintéticos listos[cite: 1].
+
+## 2. Verificación de dependencias
+
+Tras aplicar las soluciones documentadas (crear el `.env`, descargar los datos del Drive y generar la muestra), ejecutamos el cuaderno `00_verificacion.ipynb`[cite: 1]. 
+
+El entorno se ejecutó exitosamente sin arrojar discrepancias en las versiones de las librerías. Esto nos confirma que la imagen de Docker está aislando y congelando correctamente las dependencias de Python establecidas en la Sesión 2, garantizando que el código del SECOP II corra exactamente igual en cualquier máquina del equipo[cite: 1].
