@@ -1,11 +1,15 @@
 services:
   jupyter:
     image: jupyter/scipy-notebook:python-3.11
+    env_file:
+      - .env 
     ports:
       - "8888:8888"
     volumes:
       - ./notebooks:/home/jovyan/work/notebooks
       - ./data:/home/jovyan/work/data
+      - ./resultados:/home/jovyan/work/resultados   # <-- NUEVO
+      - ./docs:/home/jovyan/work/docs               # <-- NUEVO
       - ./requirements.txt:/tmp/requirements.txt
     command: >
       bash -c "pip install -r /tmp/requirements.txt &&
