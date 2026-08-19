@@ -53,4 +53,22 @@ java.nio.channels.UnresolvedAddressException
 
 ## Relación factor–tolerancia, con números propios
 
-`COMPLETAR` — expresen la relación con las cifras que acaban de medir, no como impresión general.
+
+Con el archivo de 9,9 MB lógicos medido sobre nuestro clúster:
+
+| Factor `R` | Almacenamiento físico | Sobrecosto vs. R=1 | Nodos que tolera |
+|---|---|---|---|
+| 1 | 9,9 MB  | —      | 0 |
+| 2 | 19,8 MB | +100 % | 1 |
+| 3 | 29,6 MB | +199 % | 2 |
+
+La relación es **lineal en las dos direcciones y sin economía de escala**: cada copia
+adicional cuesta un 100 % del volumen lógico y compra exactamente un nodo más de
+tolerancia (`tolerancia = R − 1`). Pasar de R=2 a R=3 cuesta los mismos 9,9 MB que costó
+pasar de R=1 a R=2, mientras que el beneficio marginal es siempre el mismo: un nodo.
+
+Llevado al volumen real proyectado en `docs/T3_proyeccion_almacenamiento.md`, donde SECOP II
+alcanza **0,5468 GB lógicos a doce meses**, la decisión de factor 3 significa 1,6405 GB
+físicos frente a los 0,5468 GB de factor 1: **1,09 GB adicionales de disco a cambio de
+tolerar la caída simultánea de dos nodos**. Ese es el número que sostiene la recomendación
+del reto de negocio, y a esta escala el costo es marginal frente a la garantía.
