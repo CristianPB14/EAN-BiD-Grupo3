@@ -11,6 +11,8 @@ cuándo un problema de datos deja de resolverse con "un computador más grande".
 Cada sesión entrega una tarea (T1, T2, T3...) que **consume la anterior y habilita la siguiente**. Este
 README existe para que cualquier persona con acceso pueda entender su contenido.
 
+El link de acceso para las bases de datos del SECOP, IDEAM y la Gran Encuesta del Dane es el siguiente: https://drive.google.com/drive/folders/1oaHmNeKaV13TV4X8bhu0gpUeFiZC6VlI?usp=sharing
+
 ---
 
 ## 1. Estado del avance (S1 → S4)
