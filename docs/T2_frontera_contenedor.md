@@ -26,6 +26,8 @@ Tras aplicar las soluciones documentadas (crear el `.env`, descargar los datos d
 
 El entorno se ejecutó exitosamente sin arrojar discrepancias en las versiones de las librerías. Esto nos confirma que la imagen de Docker está aislando y congelando correctamente las dependencias de Python establecidas en la Sesión 2, garantizando que el código del SECOP II corra exactamente igual en cualquier máquina del equipo.
 
+
+
 ## 3. Errores al realizar actualizaciones en git
 
 En una de las actualizaciones se subió por error el archivo ideam_sample.csv
