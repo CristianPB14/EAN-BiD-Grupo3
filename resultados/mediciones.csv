@@ -1,0 +1,4 @@
+fuente,filas,columnas,columnas_texto,proporcion_texto,tipos,tamano_disco_gb,k
+SECOP II,200000,85,65,0.765,"{'object': 65, 'int64': 19, 'float64': 1}",0.304458,3.01
+IDEAM,150000,13,8,0.615,"{'object': 8, 'float64': 3, 'int64': 2}",0.032133,2.85
+GEIH,29611,202,11,0.054,"{'float64': 151, 'int64': 40, 'object': 11}",0.009664,5.37

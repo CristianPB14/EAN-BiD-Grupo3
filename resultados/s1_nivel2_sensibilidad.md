@@ -1,33 +1,14 @@
-# S1 · Nivel 2 · Análisis de sensibilidad a `g`
+# Nivel 2: Análisis de Sensibilidad
 
-> Este archivo es el entregable en texto plano que pide la sección 8 de la guía de sesión 1
-> (`resultados/nivel2_sensibilidad.md`). El cálculo que lo sostiene vive en
-> `notebooks/s01_perfilamiento.ipynb` (celda de barrido de `g`); este documento recoge las
-> respuestas escritas a las tres preguntas.
+**1. ¿Duplicar `g` reduce el umbral a la mitad?**
+No, no lo reduce exactamente a la mitad, y nuestra prueba de sensibilidad lo demuestra empíricamente. Según las mediciones en nuestro entorno, con un $g=4\%$ el umbral de saturación es de 37.7 períodos[cite: 4]. Al duplicar la tasa a $g=8\%$, el umbral no cae matemáticamente a la mitad (18.85), sino a 19.2 períodos[cite: 4]. Esta falta de proporcionalidad directa se explica porque la tasa de crecimiento ($g$) opera dentro de una función de logaritmo natural $\ln(1+g)$ en el denominador, lo que hace que la curva de saturación no sea una línea recta, sino que decrezca cada vez más lento[cite: 2].
 
-## 1. ¿Duplicar `g` reduce el umbral a la mitad?
+**2. ¿Qué error en la estimación de `g` cambia su recomendación de arquitectura?**
+Nuestra recomendación actual es mantener la infraestructura centralizada porque, asumiendo un $g=5\%$, tenemos un margen amplio de 51.3 meses. 
 
-No. La relación no es lineal: `g` aparece dentro de un logaritmo en el denominador (`ln(1+g)`),
-mientras que `k` y `S0` aparecen dentro de un logaritmo en el numerador. Duplicar `g` de 4 % a 8 %
-no reduce `t_umbral` a la mitad — lo reduce de forma menos que proporcional cuando `g` es bajo, y de
-forma más agresiva cuando `g` ya es alto, porque `ln(1+g)` crece más lento que `g` mismo.
+Un error de estimación leve (por ejemplo, que la contratación real crezca al 8%) reduciría el margen a 19.2 meses[cite: 4]. Aunque es un recorte significativo, todavía nos deja más de año y medio de holgura operativa. El quiebre en la recomendación ocurriría si nos equivocamos dramáticamente y el crecimiento real fuera del 16% mensual; en ese escenario extremo, el sistema colapsaría en apenas 10.0 meses[cite: 4]. Ese es el límite temporal que cambiaría nuestra recomendación técnica a "migrar inmediatamente a un clúster distribuido", ya que 10 meses es el margen mínimo prudente para aprovisionar servidores y realizar las pruebas de calidad sobre los expedientes públicos.
 
-## 2. ¿Qué error en la estimación de `g` cambia la recomendación de arquitectura?
+**3. ¿Qué es más grave para la decisión: equivocarse en `g` o equivocarse en `k`?**
+Es matemáticamente y operativamente mucho más crítico equivocarse en el factor de expansión ($k$). 
 
-`COMPLETAR` con la cifra concreta de su fuente, leyendo la salida de la celda de barrido: comparen
-`t_umbral` entre `g=1%` y `g=2%`. Si esa diferencia ya mueve la recomendación (por ejemplo, de "hay
-años de margen" a "hay meses de margen"), entonces un solo punto porcentual de error en `g` es
-suficiente para cambiar la decisión.
-
-## 3. ¿Qué es más grave para la decisión: equivocarse en `g` o en `k`?
-
-Equivocarse en `k` es más grave. `k` multiplica directamente a `S0` dentro del logaritmo del
-numerador, así que un `k` subestimado (por ejemplo, medido sin `deep=True`) desplaza el umbral
-completo de forma inmediata y en una sola dirección: hace parecer que hay más margen del que
-realmente hay. `g` solo afecta la pendiente con la que se llega al umbral, no si se llega.
-
----
-
-**Nota de origen:** las respuestas 1 y 3 son generales, se sostienen en la forma de la fórmula y no
-dependen de la fuente elegida. La respuesta 2 sí depende de las cifras concretas de su fuente —
-complétenla con la salida real de la celda de barrido antes de entregar.
+La asimetría en la fórmula es clara: equivocarse en $g$ (en el denominador) solo altera la pendiente o la velocidad con la que nos acercamos al abismo a futuro[cite: 2]. En cambio, el factor $k$ reside dentro del logaritmo del numerador $\ln(M / (k \cdot S_0))$[cite: 2]. Equivocarse al medir $k$ —por ejemplo, omitir el peso real de los textos y objetos complejos en los registros del SECOP II— desplaza el cálculo completo de golpe y en una sola dirección[cite: 2]. Un $k$ subestimado podría ocultarnos el hecho de que la memoria de la máquina ya está completamente saturada el día de hoy, dejándonos sin ningún margen de reacción.

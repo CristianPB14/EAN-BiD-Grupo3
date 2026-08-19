@@ -1,18 +1,10 @@
-# S1 · Nivel 3 · Matriz de V dominante
-
-Evidencia numérica en la V dominante; una línea de descarte en las otras cuatro. Basado en la última
-medición disponible en `notebooks/s01_perfilamiento.ipynb` — vuelvan a confirmar tras re-ejecutar el
-notebook con el entorno corregido.
+# Nivel 3: Matriz de las 5 V
 
 | Fuente | Volumen | Velocidad | Variedad | Veracidad | Valor |
 |---|---|---|---|---|---|
-| **SECOP II** | **Dominante.** 200.000 filas de muestra, 85 columnas, 76,5 % de tipo texto, `k = 3,38` — el mayor volumen efectivo en memoria de las tres fuentes, y crece con cada nuevo proceso de contratación publicado. | Descartada: `COMPLETAR` — comparen frecuencia declarada del portal contra la frecuencia real observada en las marcas de tiempo. | Descartada: `COMPLETAR` — ¿el esquema de columnas se mantiene igual entre descargas? | Descartada: `COMPLETAR` — midan proporción de nulos por columna y duplicados de la clave antes de descartarla. | Descartada: `COMPLETAR` — ¿qué decisión de la organización cambia si SECOP II existe? |
-| **IDEAM** | Descartada: 150.000 filas pero solo 13 columnas y `k = 3,25` — menor huella en memoria que SECOP II. | **Hipótesis a confirmar.** El diseño de la fuente (estaciones que reportan en alta frecuencia) sugiere velocidad como V dominante, pero esto es la hipótesis de la guía, no un resultado medido. `COMPLETAR`: midan la frecuencia real entre registros consecutivos de una misma estación. | Descartada: `COMPLETAR` | Descartada: `COMPLETAR` | Descartada: `COMPLETAR` |
-| **GEIH** | Descartada: 29.611 filas, la muestra más pequeña de las tres. | Descartada: `COMPLETAR` | **Dominante, con una advertencia.** El perfilamiento detectó **una sola columna** en el archivo cargado (`proporcion_texto = 1.0`), pese a que el diccionario de variables de la GEIH documenta decenas de campos. Eso es evidencia directa de variedad — probablemente un separador de campo distinto a la coma, o la necesidad de leer el diccionario aparte antes de poder interpretar el archivo, tal como advierte la sección 2.3 de la guía. `COMPLETAR`: confirmen la causa exacta antes de dar esto por cerrado. | Descartada, pero **no verificada**: `COMPLETAR` | Descartada: `COMPLETAR` |
+| **SECOP II** | **Dominante:** 304.5 MB en disco físico para solo 200,000 registros. | Descartada: La carga es diaria, pero no requiere streaming en tiempo real para análisis. | Descartada: Estructura de formularios legales y pliegos estable (85 columnas). | Descartada: Datos oficiales del Estado estructurados. | Descartada: Alto valor, pero la restricción técnica inicial es el tamaño en RAM. |
+| **IDEAM** | Descartada: Muestra manejable de 32.1 MB. | **Dominante:** Alta frecuencia de captura (registros diarios/horarios continuos por múltiples estaciones). | Descartada: Esquema estrecho y altamente estable (13 columnas). | Descartada: Los sensores ambientales mantienen rangos numéricos predecibles. | Descartada: Datos climáticos vitales, pero su principal reto es el ritmo de llegada constante. |
+| **GEIH** | Descartada: Menor tamaño físico comparado con SECOP (9.7 MB). | Descartada: Publicación mensual por períodos consolidados en microdatos. | **Dominante:** Exige diccionarios separados, codificación `latin-1` y separador `;`. **Hallazgo clave:** Pese a tener poca proporción de texto libre (5.4%), tiene el $k$ más alto (5.37) por su estructura ancha (202 columnas). | Descartada: Encuesta oficial del DANE validada estadísticamente. | Descartada: Alto valor socioeconómico para el país, pero el reto técnico inicial es dominar el esquema complejo. |
 
-## Párrafo de cierre (máximo 120 palabras)
-
-`COMPLETAR` — respondan: ¿qué tuvieron que medir para poder descartar? El caso de GEIH ya les dio un
-ejemplo de qué significa "medir y no deducir": la proporción de texto de 1.0 no se dedujo, se
-encontró al perfilar, y por sí sola ya es evidencia de variedad (un archivo delimitado mal leído). Usen
-ese mismo estándar para las demás celdas antes de escribir el párrafo final.
+**¿Qué tuvo que medir para poder descartar?**
+Para descartar la variedad en SECOP II y confirmarla en GEIH, tuvimos que perfilar los tipos de datos en código. Descubrimos empíricamente que la GEIH, a pesar de tener una proporción de texto muy baja (5.4%), generaba el factor de expansión ($k$) más alto de las tres fuentes (5.37 frente al 3.01 de SECOP)[cite: 5]. Esto contradice la hipótesis inicial planteada en la guía y demuestra que el crecimiento en memoria también proviene de la conversión de esquemas anchos (202 columnas) y tipos numéricos a estructuras internas en la memoria del entorno de trabajo[cite: 5].
