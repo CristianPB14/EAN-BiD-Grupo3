@@ -132,7 +132,78 @@ Finalmente, la complejidad operativa recibe un 15 %, buscando una
 arquitectura que pueda ser mantenida y comprendida por el equipo sin
 incorporar componentes que todavía no sean necesarios.
 
+
+
+##Resultados
+Después de ejecutar la matriz ponderada mediante el script
+src/matriz_almacenamiento.py, se obtuvieron los siguientes resultados:
+
+Alternativa	Puntaje	Posición
+Lago de datos	4,20 / 5,00	1.º
+Lakehouse	4,05 / 5,00	2.º
+Almacén de datos	3,50 / 5,00	3.º
+
+El resultado confirma que el Lago de datos es la alternativa con mayor
+puntuación de acuerdo con los pesos y calificaciones establecidos.
+
+El Lago supera al Lakehouse por 0,15 puntos y al Almacén de datos por
+0,70 puntos.
+
+El resultado también es coherente con la arquitectura actual del
+proyecto, ya que esta utiliza una organización por capas y contempla el
+uso de Parquet en los datos refinados.
+
+El Lakehouse obtiene un resultado cercano al Lago, lo cual demuestra que
+es una alternativa técnicamente viable. Sin embargo, sus ventajas
+adicionales están relacionadas principalmente con capacidades
+transaccionales y de versionamiento que actualmente no constituyen una
+necesidad crítica.
+
+## Confirmación de la decisión
+La decisión se confirma tanto desde el punto de vista cuantitativo como
+desde el punto de vista de ingeniería.
+
+Desde el punto de vista cuantitativo, el Lago de datos obtiene el mayor
+puntaje de la matriz con 4,20 sobre 5,00.
+
+Desde el punto de vista de ingeniería, la alternativa mantiene
+coherencia con la arquitectura existente y evita agregar complejidad
+innecesaria.
+
+## Los principales elementos que respaldan la decisión son:
+
+1. Existe una organización del almacenamiento mediante capas.
+2. Se utiliza Parquet como formato para los datos refinados.
+3. El proyecto requiere flexibilidad durante las etapas de procesamiento.
+4. El almacenamiento debe mantener un costo razonable.
+5. Actualmente no existe un requisito fuerte de transacciones ACID.
+6. No existe una necesidad indispensable de time travel.
+7. La arquitectura puede evolucionar posteriormente hacia un lakehouse si aparecen nuevos requisitos.
+9. Por estas razones, la decisión de utilizar un Lago de datos por capas seconsidera confirmada.
+
+
 La suma de los pesos es:
 
 ```text
 20 + 20 + 20 + 15 + 10 + 15 = 100 %
+
+Puntaje = Σ (Peso × Calificación / 100)
+
+(20 × 5 / 100)
++ (20 × 5 / 100)
++ (20 × 3 / 100)
++ (15 × 4 / 100)
++ (10 × 2 / 100)
++ (15 × 4 / 100)
+
+= 1,00 + 1,00 + 0,60 + 0,60 + 0,20 + 0,60
+
+= 4,20
+
+
+Lago de datos = 4,20 / 5,00
+
+
+Almacén de datos = 3,50 / 5,00
+
+Lakehouse = 4,05 / 5,00
