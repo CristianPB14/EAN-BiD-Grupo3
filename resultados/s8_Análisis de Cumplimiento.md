@@ -52,15 +52,3 @@ Estas mediciones constituyen la base cuantitativa para fundamentar decisiones so
 
 Pendiente fuera del código: Declaración explícita del compromiso CAP (Consistencia, Disponibilidad, Tolerancia a particiones) y su relación con la arquitectura elegida.
 
-7. Comunicación técnica y citación APA 7 
-
-Cobertura del código: Nula.
-
-El código no incluye citas ni definiciones de glosario. Sin embargo, produce conceptos técnicos que deben ser citados y definidos en el informe final:
-
-Bloque HDFS y su tamaño estándar (128 MiB)
-Factor de réplica
-Formato columnar (Parquet)
-Codec de compresión
-
-Pendiente fuera del código: Citación en formato APA 7 de fuentes oficiales (ej. documentación de Apache Hadoop, Apache Parquet) y alimentación del glosario con los términos técnicos listados.
