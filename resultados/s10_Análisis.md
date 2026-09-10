@@ -1,13 +1,3 @@
-Claro. Aquí tienes el mismo contenido **sin emojis**, listo para copiar y pegar directamente en GitHub como archivo `.md`.
-
-# T10 — Modelo Lógico Dimensional
-
-> **Actividad:** Tarea acumulativa T10
-> **Sesión:** 10 — Modelado Dimensional I
-> **Módulo:** 1 — Fundamentos de Big Data y arquitecturas de datos
-> **Competencia:** TECH IA MAKER
-
-
 
 ## Introducción
 
