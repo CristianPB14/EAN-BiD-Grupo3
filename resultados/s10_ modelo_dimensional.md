@@ -51,7 +51,7 @@ permitiendo consultar las medidas por fecha, medidor y sector.
 El modelo utiliza un esquema estrella, con una tabla de hechos en el
 centro y dimensiones conformadas alrededor.
 
----
+
 
 ## 3. Tabla de hechos
 
@@ -80,7 +80,7 @@ medidor para una hora determinada.
 > Las medidas definitivas deben corresponder a las variables existentes
 > en la capa consolidada del proyecto.
 
----
+
 
 ## 4. Dimensión fecha
 
@@ -103,7 +103,7 @@ medidor para una hora determinada.
 
 La clave subrogada es independiente de la clave natural de la fecha.
 
----
+
 
 ## 5. Dimensión medidor
 
@@ -124,7 +124,6 @@ La clave subrogada es independiente de la clave natural de la fecha.
 La clave `medidor_sk` pertenece al modelo dimensional y no corresponde
 directamente al identificador del sistema origen.
 
----
 
 ## 6. Dimensión sector
 
@@ -142,7 +141,6 @@ directamente al identificador del sistema origen.
 
 `sector_sk`
 
----
 
 ## 7. Esquema estrella
 
