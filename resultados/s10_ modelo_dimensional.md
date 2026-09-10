@@ -1,6 +1,6 @@
 ## 1. Diagrama 
 
-
+```text
 
                          ┌─────────────────────┐
                          │      dim_fecha      │
@@ -41,9 +41,7 @@
                          │ presion             │
                          └─────────────────────┘
 
-
-
-
+```
 ## 2. Objetivo
 
 El objetivo de este modelo dimensional es organizar la información
