@@ -1,5 +1,4 @@
-# src/
-
+#T3
 Código reutilizable que deje de vivir solo dentro de un notebook: funciones que se repiten entre
 sesiones (por ejemplo, `measure_expansion_factor`, `compute_threshold_periods`, `profile_source`,
 hoy definidas dentro de `notebooks/s01_perfilamiento.ipynb`).
