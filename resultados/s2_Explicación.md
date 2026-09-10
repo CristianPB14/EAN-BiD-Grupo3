@@ -2,8 +2,6 @@
 
 > En un proyecto de ingeniería de datos, el objetivo central deja de ser simplemente "que los números cuadren" en un cuaderno aislado para convertirse en un ejercicio de **reproducibilidad y robustez técnica**. Cuando transitamos hacia un entorno controlado por nosotros mismos, dejamos atrás la comodidad de herramientas que ocultan las reglas del juego, obligándonos a hacernos cargo de tres capas fundamentales: el código, las dependencias y la infraestructura de ejecución.
 
----
-
 ## El impacto de controlar el entorno de trabajo
 
 Cuando un proyecto vive únicamente en la máquina de quien lo creó originalmente, se genera una dependencia frágil. El resultado de no gestionar el entorno es el clásico escenario de colapso donde el código funcionaba perfectamente ayer, pero al cambiar de equipo o de versión de software, todo se rompe sin una explicación lógica. Al estructurar el proyecto bajo un diseño reproducible, buscamos que el sistema funcione exactamente igual sin importar quién lo ejecute ni en dónde.
@@ -16,7 +14,6 @@ Cuando un proyecto vive únicamente en la máquina de quien lo creó originalmen
 
 * **El fallo oculto:** Si existen variables que dependen de la terminal personal de quien desarrolló el proyecto, o configuraciones que no quedaron documentadas, la prueba de reproducibilidad fallará de inmediato al intentarlo en un entorno limpio. Esto evidencia que el sistema todavía dependía de factores externos ocultos.
 
----
 
 ## La orquestación y el aislamiento de servicios
 
@@ -30,7 +27,6 @@ Separar las herramientas en contenedores independientes resuelve el problema de 
 
 * **El fallo operativo:** Si los puertos necesarios ya están ocupados por otros procesos del equipo o si las redes internas de los contenedores no se comunican correctamente, el sistema arrojará bloqueos de conexión. Esto obliga a rediseñar los mapeos de puertos para permitir la convivencia pacífica de los servicios.
 
----
 
 ## La validación y el contrato de uso
 
