@@ -33,6 +33,10 @@ Leyenda: ✅ completo · 🟡 en curso · ❌ pendiente
 | **S4** | ✅ `muestra/mapper.py` y `reducer.py`; YARN operativo | ✅ Combinador ejecutado, contadores en `resultados/s4_contadores_mezcla.md` | ✅ `docs/T4_agregacion_mapreduce.md`, agregación propia sobre SECOP II | ✅ `resultados/s4_reto_negocio.md` | ✅ T4 completada |
 | **S5** | ✅ MinIO levantado y los tres cubos creados | ✅ Versionado e inmutabilidad en `resultados/s5_versionado.md` | ✅ `docs/T5_convencion_lago.md`, convención de rutas de las tres capas | ✅ `resultados/s5_reto_negocio.md` | ✅ T5 completada |
 | **S6** | ✅ Tres codecs medidos en `resultados/s6_tabla_codecs.md` | ✅ Consulta con DuckDB sobre Parquet contra CSV, y poda de particiones | ✅ `docs/T6_formato_y_codec.md`, codec elegido con la medición propia | ✅ `resultados/s6_reto_negocio.md` | ✅ T6 completada, Parquet depositado en la capa refinada |
+| **S7** | ✅ `resultados/s7_requerimientos_acueducto.md`, asignación de paradigma a los 5 requisitos del acueducto | ✅ `docs/T7_paradigma.md` §2, requisitos propios (SECOP II) con frescura y volumen medidos | ✅ `docs/T7_paradigma.md` §3-4, paradigma híbrido (micro-lotes + lotes) y compromiso CAP | ✅ `resultados/s7_reto_negocio.md` | ✅ T7 completada |
+| **S8** | ✅ `muestra/T8_Muestra S8.py`, bloques HDFS, réplica y comparación CSV vs Parquet | ✅ `docs/T8_Arquitecturas de referencia.md` §2-3, derivación del paradigma y arquitectura Lambda elegida | 🟡 `docs/T8_Arquitecturas de referencia.md` §4, diagramas C4 (verificar contra `resultados/s8_Análisis de Cumplimiento.md`, que los marca pendientes) | ❌ no se encontró `s8_reto_negocio.md` | 🟡 T8 en curso, falta reto de negocio |
+| **S9** | ✅ `muestra/T9_matriz_almacenamiento.py`, matriz ponderada de criterios | ✅ `resultados/s9_informe.md`, alternativas analizadas y matriz de decisión | ✅ `docs/T9_almacenamiento.md`, ADR-0001 con beneficios, costos y condiciones de reapertura | ❌ no se encontró `s9_reto_negocio.md` | 🟡 T9 en curso, falta reto de negocio |
+| **S10** | ✅ `resultados/s10_ modelo_dimensional.md`, tabla de hechos, dimensiones y esquema estrella | ✅ `muestra/T10_modelo_dimensional.py`, claves subrogadas y validaciones | ✅ `resultados/s10_Análisis.md`, justificación de decisiones de modelado | ❌ no se encontró `s10_reto_negocio.md` | 🟡 T10 en curso, falta reto de negocio |
 
 **Cifras consolidadas del proyecto**
 
@@ -75,7 +79,10 @@ EAN-BiD-Grupo3/
 │   ├── combiner.py                  # S4 nivel 2
 │   ├── reducer2.py                  # S4 nivel 2
 │   ├── mapper_t4.py                 # S4 nivel 3 (agregación sobre SECOP II)
-│   └── reducer_t4.py                # S4 nivel 3 (agregación sobre SECOP II)
+│   ├── reducer_t4.py                # S4 nivel 3 (agregación sobre SECOP II)
+│   ├── T8_Muestra S8.py             # S8 nivel 1 · bloques HDFS, réplica, CSV vs Parquet
+│   ├── T9_matriz_almacenamiento.py  # S9 nivel 1 · matriz ponderada de paradigmas
+│   └── T10_modelo_dimensional.py    # S10 nivel 2 · carga, claves subrogadas, validaciones
 ├── data/
 │   └── raw/                         # datos crudos, bloqueados en .gitignore (ver Drive)
 ├── notebooks/
@@ -93,7 +100,11 @@ EAN-BiD-Grupo3/
 │   ├── T3_proyeccion_almacenamiento.md
 │   ├── T4_agregacion_mapreduce.md
 │   ├── T5_convencion_lago.md
-│   └── T6_formato_y_codec.md        # Nuevo · S6
+│   ├── T6_formato_y_codec.md        # Nuevo · S6
+│   ├── T7_paradigma.md              # S7 · paradigma híbrido y compromiso CAP
+│   ├── T8_Arquitecturas de referencia.md  # S8 · arquitectura Lambda y diagramas C4
+│   ├── T9_almacenamiento.md         # S9 · ADR-0001, lago de datos por capas
+│   └── T10_El modelo.md             # S10 · modelo dimensional, grano y esquema estrella
 └── resultados/
     ├── mediciones.csv
     ├── s1_nivel2_sensibilidad.md
